@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		1FCF78B77FF69F48EB90C013 /* Pods_FirebaseAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22BFEA311C6325C69D55D7DC /* Pods_FirebaseAuthentication.framework */; };
 		C98197A820346B0000D8F63D /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98197A720346B0000D8F63D /* Service.swift */; };
-		C98197AA20346DED00D8F63D /* SignUpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98197A920346DED00D8F63D /* SignUpController.swift */; };
 		C9A1E385203461F000AB3139 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A1E384203461F000AB3139 /* AppDelegate.swift */; };
 		C9A1E387203461F000AB3139 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A1E386203461F000AB3139 /* ViewController.swift */; };
 		C9A1E38C203461F000AB3139 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C9A1E38B203461F000AB3139 /* Assets.xcassets */; };
@@ -18,13 +17,13 @@
 		C9A1E399203466E600AB3139 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A1E398203466E600AB3139 /* MainTabBarController.swift */; };
 		C9A1E39B2034679A00AB3139 /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A1E39A2034679A00AB3139 /* HomeController.swift */; };
 		C9A1E39D203467D500AB3139 /* UserProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A1E39C203467D500AB3139 /* UserProfileController.swift */; };
+		C9B48A4A2036DD9F00058F5E /* WelcomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B48A492036DD9F00058F5E /* WelcomeController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		22BFEA311C6325C69D55D7DC /* Pods_FirebaseAuthentication.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FirebaseAuthentication.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4AE50260ACAEEE785014DE79 /* Pods-FirebaseAuthentication.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FirebaseAuthentication.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FirebaseAuthentication/Pods-FirebaseAuthentication.debug.xcconfig"; sourceTree = "<group>"; };
 		C98197A720346B0000D8F63D /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
-		C98197A920346DED00D8F63D /* SignUpController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpController.swift; sourceTree = "<group>"; };
 		C9A1E381203461F000AB3139 /* FirebaseAuthentication.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FirebaseAuthentication.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9A1E384203461F000AB3139 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C9A1E386203461F000AB3139 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -35,6 +34,7 @@
 		C9A1E398203466E600AB3139 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		C9A1E39A2034679A00AB3139 /* HomeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
 		C9A1E39C203467D500AB3139 /* UserProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileController.swift; sourceTree = "<group>"; };
+		C9B48A492036DD9F00058F5E /* WelcomeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeController.swift; sourceTree = "<group>"; };
 		F9C3879A1A181BA3A02D46FF /* Pods-FirebaseAuthentication.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FirebaseAuthentication.release.xcconfig"; path = "Pods/Target Support Files/Pods-FirebaseAuthentication/Pods-FirebaseAuthentication.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -98,7 +98,7 @@
 				C9A1E39A2034679A00AB3139 /* HomeController.swift */,
 				C9A1E39C203467D500AB3139 /* UserProfileController.swift */,
 				C98197A720346B0000D8F63D /* Service.swift */,
-				C98197A920346DED00D8F63D /* SignUpController.swift */,
+				C9B48A492036DD9F00058F5E /* WelcomeController.swift */,
 			);
 			path = FirebaseAuthentication;
 			sourceTree = "<group>";
@@ -183,6 +183,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-FirebaseAuthentication/Pods-FirebaseAuthentication-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/JGProgressHUD/JGProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/LBTAComponents/LBTAComponents.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
@@ -191,6 +192,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JGProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/LBTAComponents.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
@@ -241,8 +243,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				C9A1E39B2034679A00AB3139 /* HomeController.swift in Sources */,
+				C9B48A4A2036DD9F00058F5E /* WelcomeController.swift in Sources */,
 				C9A1E387203461F000AB3139 /* ViewController.swift in Sources */,
-				C98197AA20346DED00D8F63D /* SignUpController.swift in Sources */,
 				C9A1E385203461F000AB3139 /* AppDelegate.swift in Sources */,
 				C9A1E39D203467D500AB3139 /* UserProfileController.swift in Sources */,
 				C9A1E399203466E600AB3139 /* MainTabBarController.swift in Sources */,

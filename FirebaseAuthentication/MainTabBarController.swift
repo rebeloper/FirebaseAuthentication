@@ -20,9 +20,9 @@ class MainTabBarController: UITabBarController {
   fileprivate func checkLoggedInUserStatus() {
     if Auth.auth().currentUser == nil {
       DispatchQueue.main.async {
-        let signUpController = SignUpController()
-        let signUpNavigationController = UINavigationController(rootViewController: signUpController)
-        self.present(signUpNavigationController, animated: false, completion: nil)
+        let welcomeController = WelcomeController()
+        let welcomeNavigationController = UINavigationController(rootViewController: welcomeController)
+        self.present(welcomeNavigationController, animated: false, completion: nil)
         return
       }
     }
