@@ -20,7 +20,7 @@ class WelcomeController: UIViewController {
   
   var name: String?
   var email: String?
-  var profilePicture: UIImage?
+  var profileImage: UIImage?
   
   let hud: JGProgressHUD = {
     let hud = JGProgressHUD(style: .light)
@@ -107,70 +107,72 @@ class WelcomeController: UIViewController {
     
     let graphRequestConnection = GraphRequestConnection()
     let graphRequest = GraphRequest(graphPath: "me", parameters: ["fields": "id, email, name, picture.type(large)"], accessToken: AccessToken.current, httpMethod: .GET, apiVersion: .defaultVersion)
-    graphRequestConnection.add(graphRequest) { (httpResponse, result) in
+    graphRequestConnection.add(graphRequest, completion: { (httpResponse, result) in
       switch result {
       case .success(response: let response):
-        guard let responseDictionary = response.dictionaryValue else { return }
         
-        let json = JSON(responseDictionary)
+        guard let responseDict = response.dictionaryValue else { Service.dismissHud(self.hud, text: "Error", detailText: "Failed to fetch user.", delay: 3); return }
+        
+        let json = JSON(responseDict)
         self.name = json["name"].string
         self.email = json["email"].string
+        guard let profilePictureUrl = json["picture"]["data"]["url"].string else { Service.dismissHud(self.hud, text: "Error", detailText: "Failed to fetch user.", delay: 3); return }
+        guard let url = URL(string: profilePictureUrl) else { Service.dismissHud(self.hud, text: "Error", detailText: "Failed to fetch user.", delay: 3); return }
         
-        guard let profilePictureUrl = json["picture"]["data"]["url"].string, let url = URL(string: profilePictureUrl) else { return }
-        
-        URLSession.shared.dataTask(with: url, completionHandler: { (data, response, err) in
-          if let err = err {
-            print(err)
+        URLSession.shared.dataTask(with: url) { (data, response, err) in
+          if err != nil {
+            guard let err = err else { Service.dismissHud(self.hud, text: "Error", detailText: "Failed to fetch user.", delay: 3); return }
+            Service.dismissHud(self.hud, text: "Fetch error", detailText: err.localizedDescription, delay: 3)
             return
           }
-          guard let data = data else { return }
-          self.profilePicture = UIImage(data: data)
-          self.saveUserIntoFirebase()
-        }).resume()
+          guard let data = data else { Service.dismissHud(self.hud, text: "Error", detailText: "Failed to fetch user.", delay: 3); return }
+          self.profileImage = UIImage(data: data)
+          self.saveUserIntoFirebaseDatabase()
+          
+          }.resume()
+        
         break
       case .failed(let err):
-        print(err)
+        Service.dismissHud(self.hud, text: "Error", detailText: "Failed to get Facebook user with error: \(err)", delay: 3)
         break
       }
-    }
+    })
     graphRequestConnection.start()
+    
     
   }
   
-  fileprivate func saveUserIntoFirebase() {
+  fileprivate func saveUserIntoFirebaseDatabase() {
     
+    guard let uid = Auth.auth().currentUser?.uid, let name = self.name, let email = self.email, let profileImage = profileImage, let profileImageUploadData = UIImageJPEGRepresentation(profileImage, 0.3) else { Service.dismissHud(self.hud, text: "Error", detailText: "Failed to save user.", delay: 3); return }
     let fileName = UUID().uuidString
-    guard let profilePicture = self.profilePicture else { return }
-    guard let uploadData = UIImageJPEGRepresentation(profilePicture, 0.3) else { return }
-    Storage.storage().reference().child("profileImages").child(fileName).putData(uploadData, metadata: nil) { (metadata, err) in
+    
+    Storage.storage().reference().child("profileImages").child(fileName).putData(profileImageUploadData, metadata: nil) { (metadata, err) in
       if let err = err {
-        print(err)
+        Service.dismissHud(self.hud, text: "Error", detailText: "Failed to save user with error: \(err)", delay: 3);
         return
       }
-      print("Successfully saved profile image into Firebase Storage.")
+      guard let profileImageUrl = metadata?.downloadURL()?.absoluteString else { Service.dismissHud(self.hud, text: "Error", detailText: "Failed to save user.", delay: 3); return }
+      print("Successfully uploaded profile image into Firebase storage with URL:", profileImageUrl)
       
-      guard let profilePictureUrl = metadata?.downloadURL()?.absoluteString else { return }
+      let dictionaryValues = ["name": name,
+                              "email": email,
+                              "profileImageUrl": profileImageUrl]
+      let values = [uid : dictionaryValues]
       
-      guard let uid = Auth.auth().currentUser?.uid else { return }
-      
-      let dictionaryValues = ["name": self.name,
-                              "email": self.email,
-                              "profileImageUrl": profilePictureUrl]
-      
-      let values = [uid: dictionaryValues]
-      
-      Database.database().reference().child("users").updateChildValues(values, withCompletionBlock: { (err, reference) in
+      Database.database().reference().child("users").updateChildValues(values, withCompletionBlock: { (err, ref) in
         if let err = err {
-          print(err)
+          Service.dismissHud(self.hud, text: "Error", detailText: "Failed to save user info with error: \(err)", delay: 3)
           return
         }
-        print("Succesfully saved user into Firebase database.")
+        print("Successfully saved user info into Firebase database")
+        // after successfull save dismiss the welcome view controller
         self.hud.dismiss(animated: true)
         self.dismiss(animated: true, completion: nil)
-        
       })
-      
     }
+    
+    
     
   }
   

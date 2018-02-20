@@ -11,8 +11,15 @@ import FirebaseAuth
 import LBTAComponents
 import FirebaseDatabase
 import FirebaseStorage
+import JGProgressHUD
 
 class UserProfileController: UIViewController {
+  
+  let hud: JGProgressHUD = {
+    let hud = JGProgressHUD(style: .light)
+    hud.interactionType = .blockAllTouches
+    return hud
+  }()
   
   let profileImageViewHeight: CGFloat = 56
   lazy var profileImageView: CachedImageView = {
@@ -58,24 +65,23 @@ class UserProfileController: UIViewController {
   }
   
   @objc func handleFetchUserButtonTapped() {
+    hud.textLabel.text = "Fetching user..."
+    hud.show(in: view, animated: true)
     if Auth.auth().currentUser != nil {
-      
-      guard let uid = Auth.auth().currentUser?.uid else { return }
-
+      guard let uid = Auth.auth().currentUser?.uid else { Service.dismissHud(self.hud, text: "Error", detailText: "Failed to fetch user.", delay: 3); return }
       Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+        guard let dictionary = snapshot.value as? [String : Any] else { Service.dismissHud(self.hud, text: "Error", detailText: "Failed to fetch user.", delay: 3); return }
+        let user = CurrentUser(uid: uid, dictionary: dictionary)
         
-        guard let dict = snapshot.value as? [String: Any] else { return }
-        
-        let user = CurrentUser(uid: uid, dictionary: dict)
-        
+        self.uidLabel.text = uid
         self.nameLabel.text = user.name
-        self.uidLabel.text = user.uid
         self.emailLabel.text = user.email
-        
         self.profileImageView.loadImage(urlString: user.profileImageUrl)
         
+        Service.dismissHud(self.hud, text: "Success", detailText: "User fetched!", delay: 1)
+        
       }, withCancel: { (err) in
-        print(err)
+        Service.dismissHud(self.hud, text: "Error", detailText: "Failed to fetch user with error: \(err)", delay: 3)
       })
     }
   }
