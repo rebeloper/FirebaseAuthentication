@@ -12,8 +12,15 @@ import FirebaseAuth
 import JGProgressHUD
 import FacebookCore
 import FacebookLogin
+import SwiftyJSON
+import FirebaseStorage
+import FirebaseDatabase
 
 class WelcomeController: UIViewController {
+  
+  var name: String?
+  var email: String?
+  var profilePicture: UIImage?
   
   let hud: JGProgressHUD = {
     let hud = JGProgressHUD(style: .light)
@@ -92,9 +99,79 @@ class WelcomeController: UIViewController {
         return
       }
       print("Succesfully authenticated with Firebase.")
-      self.hud.dismiss(animated: true)
-      self.dismiss(animated: true, completion: nil)
+      self.fetchFacebookUser()
     }
+  }
+  
+  fileprivate func fetchFacebookUser() {
+    
+    let graphRequestConnection = GraphRequestConnection()
+    let graphRequest = GraphRequest(graphPath: "me", parameters: ["fields": "id, email, name, picture.type(large)"], accessToken: AccessToken.current, httpMethod: .GET, apiVersion: .defaultVersion)
+    graphRequestConnection.add(graphRequest) { (httpResponse, result) in
+      switch result {
+      case .success(response: let response):
+        guard let responseDictionary = response.dictionaryValue else { return }
+        
+        let json = JSON(responseDictionary)
+        self.name = json["name"].string
+        self.email = json["email"].string
+        
+        guard let profilePictureUrl = json["picture"]["data"]["url"].string, let url = URL(string: profilePictureUrl) else { return }
+        
+        URLSession.shared.dataTask(with: url, completionHandler: { (data, response, err) in
+          if let err = err {
+            print(err)
+            return
+          }
+          guard let data = data else { return }
+          self.profilePicture = UIImage(data: data)
+          self.saveUserIntoFirebase()
+        }).resume()
+        break
+      case .failed(let err):
+        print(err)
+        break
+      }
+    }
+    graphRequestConnection.start()
+    
+  }
+  
+  fileprivate func saveUserIntoFirebase() {
+    
+    let fileName = UUID().uuidString
+    guard let profilePicture = self.profilePicture else { return }
+    guard let uploadData = UIImageJPEGRepresentation(profilePicture, 0.3) else { return }
+    Storage.storage().reference().child("profileImages").child(fileName).putData(uploadData, metadata: nil) { (metadata, err) in
+      if let err = err {
+        print(err)
+        return
+      }
+      print("Successfully saved profile image into Firebase Storage.")
+      
+      guard let profilePictureUrl = metadata?.downloadURL()?.absoluteString else { return }
+      
+      guard let uid = Auth.auth().currentUser?.uid else { return }
+      
+      let dictionaryValues = ["name": self.name,
+                              "email": self.email,
+                              "profileImageUrl": profilePictureUrl]
+      
+      let values = [uid: dictionaryValues]
+      
+      Database.database().reference().child("users").updateChildValues(values, withCompletionBlock: { (err, reference) in
+        if let err = err {
+          print(err)
+          return
+        }
+        print("Succesfully saved user into Firebase database.")
+        self.hud.dismiss(animated: true)
+        self.dismiss(animated: true, completion: nil)
+        
+      })
+      
+    }
+    
   }
   
   override func viewDidLoad() {
