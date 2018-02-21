@@ -38,6 +38,14 @@ class UserProfileController: UIViewController {
     return label
   }()
   
+  let usernameLabel: UILabel = {
+    let label = UILabel()
+    label.text = "User's Username"
+    label.font = UIFont.systemFont(ofSize: 14)
+    label.textColor = .lightGray
+    return label
+  }()
+  
   let uidLabel: UILabel = {
     let label = UILabel()
     label.text = "User's Uid"
@@ -75,6 +83,7 @@ class UserProfileController: UIViewController {
         
         self.uidLabel.text = uid
         self.nameLabel.text = user.name
+        self.usernameLabel.text = user.username
         self.emailLabel.text = user.email
         self.profileImageView.loadImage(urlString: user.profileImageUrl)
         
@@ -107,12 +116,14 @@ class UserProfileController: UIViewController {
   fileprivate func setupViews() {
     view.addSubview(profileImageView)
     view.addSubview(nameLabel)
+    view.addSubview(usernameLabel)
     view.addSubview(uidLabel)
     view.addSubview(emailLabel)
     
     profileImageView.anchor(view.safeAreaLayoutGuide.topAnchor, left: view.safeAreaLayoutGuide.leftAnchor, bottom: nil, right: nil, topConstant: 16, leftConstant: 16, bottomConstant: 0, rightConstant: 16, widthConstant: profileImageViewHeight, heightConstant: profileImageViewHeight)
     nameLabel.anchor(view.safeAreaLayoutGuide.topAnchor, left: profileImageView.rightAnchor, bottom: nil, right: view.safeAreaLayoutGuide.rightAnchor, topConstant: 24, leftConstant: 16, bottomConstant: 0, rightConstant: 16, widthConstant: 0, heightConstant: 0)
-    uidLabel.anchor(nameLabel.bottomAnchor, left: profileImageView.rightAnchor, bottom: nil, right: view.safeAreaLayoutGuide.rightAnchor, topConstant: 8, leftConstant: 16, bottomConstant: 0, rightConstant: 16, widthConstant: 0, heightConstant: 0)
+    usernameLabel.anchor(nameLabel.bottomAnchor, left: profileImageView.rightAnchor, bottom: nil, right: view.safeAreaLayoutGuide.rightAnchor, topConstant: 6, leftConstant: 16, bottomConstant: 0, rightConstant: 16, widthConstant: 0, heightConstant: 0)
+    uidLabel.anchor(usernameLabel.bottomAnchor, left: profileImageView.rightAnchor, bottom: nil, right: view.safeAreaLayoutGuide.rightAnchor, topConstant: 6, leftConstant: 16, bottomConstant: 0, rightConstant: 16, widthConstant: 0, heightConstant: 0)
     emailLabel.anchor(uidLabel.bottomAnchor, left: profileImageView.rightAnchor, bottom: nil, right: view.safeAreaLayoutGuide.rightAnchor, topConstant: 6, leftConstant: 16, bottomConstant: 0, rightConstant: 16, widthConstant: 0, heightConstant: 0)
   }
   

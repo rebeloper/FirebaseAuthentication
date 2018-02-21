@@ -19,7 +19,11 @@ class Service {
   static let buttonTitleColor = UIColor.white
   static let buttonBackgroundColorSignInAnonymously = UIColor(r: 54, g: 54, b: 54)
   static let buttonBackgroundColorSignInWithFacebook = UIColor(r: 88, g: 86, b: 214)
+  static let buttonBackgroundColorSignInWithTwitter = UIColor(r: 90, g: 200, b: 250)
   static let buttonCornerRadius: CGFloat = 7
+  
+  static let twitterKey = "TU2fZu7jPxDaMPwm1sDrEBsdb"
+  static let twitterSecret = "fizqSQz1B0HxSsSgqIduDCidbQfIp5LiXxrVVRL4SwMLGj7blS"
   
   static func showAlert(on: UIViewController, style: UIAlertControllerStyle, title: String?, message: String?, actions: [UIAlertAction] = [UIAlertAction(title: "Ok", style: .default, handler: nil)], completion: (() -> Swift.Void)? = nil) {
     let alert = UIAlertController(title: title, message: message, preferredStyle: style)
